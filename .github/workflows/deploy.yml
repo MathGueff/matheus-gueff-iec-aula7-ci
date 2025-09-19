@@ -2,7 +2,7 @@ name: CI / CD
 
 on:
   push:
-    branches: [develop]
+    branches: [main] #Develop para Main
 
 jobs:
   pipeline:
@@ -12,13 +12,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
+          token: ${{secrets.IEC_EX7_TOKEN}
           fetch-depth: 0
 
       - name: Dependências
-        run: npm install --force      
+        run: npm install --force
 
       - name: Semver
-        run: npm install -g semver       
+        run: npm install -g semver
 
       - name: Build
         run: npm build
@@ -28,7 +29,7 @@ jobs:
 
       - name: Criar nova tag caso não exista
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GH_TOKEN: ${{ secrets.IEC_EX7_TOKEN }}
         run: |
           if [ -z "$(git tag)" ]; then
             git config --global user.name 'github-actions'
