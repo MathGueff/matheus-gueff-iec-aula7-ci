@@ -1,4 +1,4 @@
-const number = 10
+const number = 15
 
 function calc(a){
     return number + a;
