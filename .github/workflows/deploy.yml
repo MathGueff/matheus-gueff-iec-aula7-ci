@@ -138,7 +138,7 @@ jobs:
       - name: Commit e push package/tag
         if: steps.version.outputs.should_deploy == 'true' && github.ref == 'refs/heads/develop'
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+          GITHUB_TOKEN: ${{ secrets.IEC_EX7_TOKEN }} 
         run: |
           set -euo pipefail
 
