@@ -2,7 +2,7 @@ name: CI / CD
 
 on:
   push:
-    branches: [develop]
+    branches: [main] #Develop para Main
 
 jobs:
   pipeline:
@@ -12,23 +12,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
+          token: ${{secrets.IEC_EX7_TOKEN}}
           fetch-depth: 0
 
       - name: Dependências
-        run: npm install --force      
+        run: npm install --force
 
       - name: Semver
-        run: npm install -g semver       
+        run: npm install -g semver
 
       - name: Build
-        run: npm build
+        run: npm run build
 
       - name: Testes
-        run: npm test -- --coverage
+        run: npm run test -- --coverage
 
       - name: Criar nova tag caso não exista
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GH_TOKEN: ${{ secrets.IEC_EX7_TOKEN }}
         run: |
           if [ -z "$(git tag)" ]; then
             git config --global user.name 'github-actions'
@@ -166,16 +167,31 @@ jobs:
       # Envio de e-mail EM CASO DE FALHA no pipeline
       - name: Enviar email se falhar
         if: failure()
-        uses: dawidd6/action-send-mail@v3          
-      # Cadastrar os dados para envio de e-mail e recupera-los aqui 
-      # Ex.: SMTP DO SERVIDOR DE E-MAIL / PORTA / USUARIO / SENHA / EMAIL E API/TOKEN PARA ENVIO DE E-MAIL)
-      # No gmail há uma configuração para geração de secret para envio de e-mails por aplicativos terceiros
-      # E-mail deve ser enviado para: fe.dsm.vot.001@gmail.com
-      # Assunto: Falha pipeline Actions
-      # Conteúdo: 
-          #  A execução falhou.
-          #  Repositório: ${{ github.repository }}
-          #  Commit: ${{ github.sha }}
-          #  Workflow: ${{ github.workflow }}
-          #  Job: ${{ github.job }}
-          #  Veja os logs: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        uses: dawidd6/action-send-mail@v3
+        env:
+          # Optional http proxy:
+          HTTP_PROXY: http://proxy.example.test:3128
+        with:
+          # Specify connection via URL (replaces server_address, server_port, secure,
+          # username and password)
+          #
+          # Format:
+          #
+          #  * smtp://user:password@server:port
+          #  * smtp+starttls://user:password@server:port
+          connection_url: ${{secrets.MAIL_CONNECTION}}
+          # Required mail server address if not connection_url:
+          server_address: smtp.gmail.com
+          # Server port, default 25:
+          server_port: 465
+          # Optional whether this connection use TLS (default is true if server_port is 465)
+          secure: true
+          # Required mail subject:
+          subject: Github Actions job result
+          # Required recipients' addresses:
+          to: gueffmatheus@gmail.com
+          # Required sender full name (address can be skipped):
+          from: Matheus Gueff # <user@example.com>
+          # Optional plain body:
+          body: Build job of ${{github.repository}} completed successfully!
+    

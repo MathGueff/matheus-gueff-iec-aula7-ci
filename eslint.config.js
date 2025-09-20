@@ -1,6 +1,7 @@
 // eslint.config.js
 // @ts-check
 import js from "@eslint/js";
+import globals from "globals";
 
 /** @type {import('eslint').Linter.FlatConfig[]} */
 export default [
@@ -18,6 +19,7 @@ export default [
       ecmaVersion: "latest",
       sourceType: "module",
       globals: {
+        ...globals.jest,
         // Node
         process: "readonly",
         console: "readonly",
