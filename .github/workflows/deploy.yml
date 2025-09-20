@@ -192,4 +192,8 @@ jobs:
           to: gueffmatheus@gmail.com
           # Required sender full name (address can be skipped):
           from: Matheus Gueff # <user@example.com>
+          # Optional plain body:
+          body: Build job of ${{github.repository}} completed successfully!
+          # Optional HTML body read from file:
+          html_body: file://README.html
     
