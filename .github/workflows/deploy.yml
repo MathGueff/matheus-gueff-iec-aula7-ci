@@ -5,7 +5,7 @@ on:
     branches: [main] #Develop para Main
 
 jobs:
-  pipeline:
+  version:
     runs-on: ubuntu-latest
 
     steps:
